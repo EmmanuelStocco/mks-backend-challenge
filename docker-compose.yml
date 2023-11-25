@@ -1,0 +1,14 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: postgres-article
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: mksdatabasechallenge
+    volumes:
+      - ./data:/data/postgres
+    ports:
+      - "5433:5432"
