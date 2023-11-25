@@ -3,7 +3,7 @@ FROM node:16
 WORKDIR /usr/src/api
 
 COPY . .
-COPY ./.env ./.env
+#  COPY ./.env ./.env
 
 RUN npm install --quiet --no-optional --no-fund --loglevel=error
 
