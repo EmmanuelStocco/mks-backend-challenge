@@ -3,9 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from './modules/user.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), TypeOrmModule.forRoot({
+  imports: [UserModule, ConfigModule.forRoot(), TypeOrmModule.forRoot({
     type: 'postgres',
     host: process.env.POSTGRES_HOST,
     port: Number(process.env.POSTGRES_PORT),
