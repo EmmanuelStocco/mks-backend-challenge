@@ -1,7 +1,11 @@
 import { Controller, Delete, Get, Post, Put } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository }from 'typeorm'
+import { UserModel } from "src/models/user.model";
 
 @Controller('/user')
 export class UserController {
+  constructor(@InjectRepository(UserModel) private model: Repository<UserModel> ){}
   @Post()
   public create(): any {
     return { data: 'Create!'};
@@ -13,8 +17,9 @@ export class UserController {
   }
 
   @Get()
-  public getAll(): any {
-    return { data: 'getAll!'};
+  public async getAll(): Promise<{ data: UserModel[] }> {
+    const list = await this.model.find()
+    return { data: list };
   }
 
   @Put(':id')
