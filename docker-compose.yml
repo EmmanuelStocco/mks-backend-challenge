@@ -12,3 +12,13 @@ services:
       - ./data:/data/postgres
     ports:
       - "5433:5432"
+
+
+  node_app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres 
