@@ -1,8 +1,11 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, ValidationPipe } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, ValidationPipe } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository }from 'typeorm'
 import { UserModel } from "src/models/user.model";
 import { UserSchema } from "src/schemas/user.schemas";
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+
 
 @Controller('/user')
 export class UserController {
@@ -10,6 +13,16 @@ export class UserController {
   @Post()
   public async create(@Body() body: UserSchema
   ): Promise<{ data: UserModel }> {
+    const { email, password, confirmPassword } = body;
+    const userExistsByEmail = await this.model.findOne({ where: { email } });
+    if (userExistsByEmail) {
+      throw new BadRequestException('Already registered user');
+    }
+
+    if (password != confirmPassword) {
+      throw new BadRequestException('Passwords do not match');
+    }
+
     const userCreated = await this.model.save(body);
     return { data: userCreated };
   }
