@@ -4,11 +4,13 @@ import { Repository }from 'typeorm'
 import { UserModel } from "src/models/user.model";
 import { UserSchema } from "src/schemas/user.schemas"; 
 import * as bcrypt from 'bcrypt';
+import * as jwt from 'jsonwebtoken';
 
 
 @Controller('/user')
 export class UserController {
   constructor(@InjectRepository(UserModel) private model: Repository<UserModel> ){}
+
   @Post()
   public async create(@Body() body: UserSchema
   ): Promise<{ data: UserModel }> {
@@ -32,6 +34,35 @@ export class UserController {
 
     const userCreated = await this.model.save(newUser);
     return { data: userCreated };
+  }
+
+  @Post('login')
+  async login(@Body() { emailOrName, password }: { emailOrName: string; password: string }): Promise<{ user: Omit<UserModel, 'password'>, token: string }> {
+    console.log(emailOrName, password)
+    let user = await this.model.findOne({ where: { email: emailOrName } });
+
+    if (!user) {
+      user = await this.model.findOne({ where: { name: emailOrName } });
+    }
+
+    if (!user) {
+      throw new BadRequestException('Invalid email or password');
+    }
+
+    const verifyPass = await bcrypt.compare(password, user.password);
+
+    if (!verifyPass) {
+      throw new BadRequestException('Invalid email or password');
+    }
+
+    const token = jwt.sign({ id: user.id }, process.env.JWT_PASS, { expiresIn: '8h' });
+
+    const { password: _, ...userLogin } = user;
+
+    return {
+      user: userLogin,
+      token: token,
+    };
   }
 
   @Get(':id')
