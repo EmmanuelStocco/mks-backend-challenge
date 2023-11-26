@@ -7,7 +7,6 @@ import { UserModule } from './modules/user.module';
 import { UserModule as UserModuleSwagger } from './user/user.module';
 
 import { MovieModule } from './modules/movie.module';
-import { MoviesModule } from './movies/movies.module';
 
 @Module({
   imports: [
@@ -25,7 +24,6 @@ import { MoviesModule } from './movies/movies.module';
       entities: ['dist/**/*.model.js'],
     }),
     UserModuleSwagger,
-    MoviesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
