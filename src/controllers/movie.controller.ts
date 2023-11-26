@@ -14,7 +14,7 @@ import { MovieModel } from 'src/models/movie.model';
 import { MovieSchema } from 'src/schemas/movie.schemas';
 
 @Controller('/movie')
-export class UserController {
+export class MovieController {
   constructor(
     @InjectRepository(MovieModel) private model: Repository<MovieModel>,
   ) {}
