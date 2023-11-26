@@ -83,11 +83,24 @@ export class UserController {
       @Body() body: UserSchema
     ): Promise<{ data: UserModel }> {
     const user = await this.model.findOne({ where: { id }});
+    const { email, password, confirmPassword, name } = body;
+
+    if (password != confirmPassword) {
+      throw new BadRequestException('Passwords do not match');
+    }
+
+    const hashPassword = await bcrypt.hash(password, 10)
     
     if(!user) {
       throw new NotFoundException(`No users with this id were found.`)
     }
-    await this.model.update({ id }, body)
+    const updateUser = {
+      name,
+      password: hashPassword,
+      email
+    };
+
+    await this.model.update({ id }, updateUser)
 
     return { data: await this.model.findOne({ where: { id }}) };
   }
