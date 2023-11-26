@@ -7,11 +7,13 @@ import {
   Get,
   Delete,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { MovieModel } from 'src/models/movie.model';
 import { MovieSchema } from 'src/schemas/movie.schemas';
+import { AuthGuard } from 'src/middleware/authMiddelware';
 
 @Controller('/movie')
 export class MovieController {
@@ -37,6 +39,7 @@ export class MovieController {
   }
 
   @Get()
+  @UseGuards(AuthGuard) // Aplica o Guarda de Autenticação
   public async getAll(): Promise<{ data: MovieModel[] }> {
     const movieList = await this.model.find();
     return { data: movieList };
