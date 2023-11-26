@@ -16,6 +16,7 @@ import { MovieSchema } from 'src/schemas/movie.schemas';
 import { AuthGuard } from 'src/middleware/authMiddelware';
 
 @Controller('/movie')
+@UseGuards(AuthGuard)
 export class MovieController {
   constructor(
     @InjectRepository(MovieModel) private model: Repository<MovieModel>,
@@ -39,7 +40,6 @@ export class MovieController {
   }
 
   @Get()
-  @UseGuards(AuthGuard) // Aplica o Guarda de Autenticação
   public async getAll(): Promise<{ data: MovieModel[] }> {
     const movieList = await this.model.find();
     return { data: movieList };
