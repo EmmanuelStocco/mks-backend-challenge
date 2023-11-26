@@ -23,4 +23,20 @@ export class MoviesService {
   remove(id: number) {
     return `This action removes a #${id} movie`;
   }
+
+  getByTitle(title: string) {
+    return `This action returns all movies with the title containing: ${title}`;
+  }
+
+  getByDirector(director: string) {
+    return `This action returns all movies directed by: ${director}`;
+  }
+
+  getByYear(year: number) {
+    return `This action returns all movies from the year: ${year}`;
+  }
+
+  byNationality(nationality: string) {
+    return `This action returns all movies from the nationality: ${nationality}`;
+  }
 }
