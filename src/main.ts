@@ -9,11 +9,16 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('Documentação - Desafio Backend Challenge')
+    .setTitle('Documentation - Backend Challenge')
     .setDescription(
-      'Aqui você consegue visualizar e testar diretamente o funcionamento de cada rota da API RESTfull.',
+      'Here, you can view and directly test the functionality of each route of the RESTful API.',
     )
-    .setVersion('1.0')
+    .setContact(
+      'Emmanuel Stocco', // Author's name
+      'https://github.com/emmanuelstocco', // Author's URL
+      'emmanuelrolimstocco@gmail.com', // Author's email
+    )
+    .setVersion('2.0')
     .addTag('user')
     .addTag('movies')
     .build();
