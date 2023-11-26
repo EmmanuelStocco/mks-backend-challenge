@@ -20,7 +20,7 @@ import { CreateUserDto } from 'src/dto/user/create-user.dto';
 import { LoginUserDto } from 'src/dto/user/login-user.dto';
 import { UpdateUserDto } from 'src/dto/user/update-user.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { getRedis, setRedis } from 'src/redisConfig';
+import { deleteRedisKey, getRedis, setRedis } from 'src/redisConfig';
 
 @ApiTags('user')
 @Controller('/user')
@@ -56,6 +56,8 @@ export class UserController {
     };
 
     const userCreated = await this.model.save(newUser);
+    await deleteRedisKey('all-users');
+
     return { data: userCreated };
   }
 
@@ -125,8 +127,15 @@ export class UserController {
     description: 'Endpoint used to retrieve all users.',
   })
   public async getAll(): Promise<{ data: UserModel[] }> {
-    const list = await this.model.find();
-    return { data: list };
+    const allUsersRedis = await getRedis(`all-users`);
+    if (allUsersRedis) {
+      const allUsersRedisFound = JSON.parse(allUsersRedis);
+      return { data: allUsersRedisFound };
+    } else {
+      const list = await this.model.find();
+      await setRedis(`all-users`, JSON.stringify(list));
+      return { data: list };
+    }
   }
 
   @Put(':id')
@@ -157,6 +166,7 @@ export class UserController {
     };
 
     await this.model.update({ id }, updateUser);
+    await deleteRedisKey('all-users');
 
     return { data: await this.model.findOne({ where: { id } }) };
   }
@@ -174,6 +184,8 @@ export class UserController {
       throw new NotFoundException(`No users with this id were found.`);
     }
     await this.model.delete(id);
+    await deleteRedisKey('all-users');
+
     return { data: `User id:${id} has been successfully deleted!` };
   }
 }
