@@ -1,13 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('/api')
+  app.setGlobalPrefix('/api');
   app.useGlobalPipes(new ValidationPipe());
 
-  
   const config = new DocumentBuilder()
     .setTitle('Documentação - Desafio Backend Challenge')
     .setDescription(
@@ -15,11 +14,11 @@ async function bootstrap() {
     )
     .setVersion('1.0')
     .addTag('user')
-    .build();  
-    
+    .addTag('movies')
+    .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('document', app, document);
-
 
   await app.listen(3000); //docker build
 }
