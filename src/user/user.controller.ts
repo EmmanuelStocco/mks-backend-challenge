@@ -1,8 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger'
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { LoginUserDto } from './dto/login-user.dto';
 
 @ApiTags('user')
@@ -30,7 +39,8 @@ export class UserController {
 
   @ApiOperation({
     summary: 'Buscar por usuário único via id',
-    description: 'Endpoint utilizado para buscar por apenas um usuário, através do id único de cada.',
+    description:
+      'Endpoint utilizado para buscar por apenas um usuário, através do id único de cada.',
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -39,7 +49,8 @@ export class UserController {
 
   @ApiOperation({
     summary: 'Atualizar usuário',
-    description: 'Endpoint utilizado para atualizar as informações de um usuário através do id.',
+    description:
+      'Endpoint utilizado para atualizar as informações de um usuário através do id.',
   })
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
@@ -57,7 +68,8 @@ export class UserController {
 
   @ApiOperation({
     summary: 'Realizar login',
-    description: 'Endpoint logar um usuário através de JWT, recebendo as credenciais, validando e retornando um Token.',
+    description:
+      'Endpoint logar um usuário através de JWT, recebendo as credenciais, validando e retornando um Token.',
   })
   @Post('/login')
   login(@Body() loginUserDto: LoginUserDto) {
