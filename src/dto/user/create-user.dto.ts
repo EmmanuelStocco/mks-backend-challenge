@@ -2,30 +2,30 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
   @ApiProperty({
-    description: 'O nome do usuário',
-    example: 'João Silva',
+    description: 'The user name',
+    example: 'John Doe',
   })
   name: string;
 
   @ApiProperty({
-    description: 'Confirmação da senha do usuário',
-    example: 'Senha123*',
+    description: 'User password confirmation',
+    example: 'John123*',
     minLength: 8,
     maxLength: 20,
   })
   password: string;
 
   @ApiProperty({
-    description: 'Confirmação da senha do usuário',
-    example: 'Senha123*',
+    description: 'User password confirmation',
+    example: 'John123*',
     minLength: 8,
     maxLength: 20,
   })
   confirmPassword: string;
 
   @ApiProperty({
-    description: 'O endereço de e-mail do usuário',
-    example: 'joao@mail.com',
+    description: 'The user email address',
+    example: 'john@mail.com',
   })
   email: string;
 }

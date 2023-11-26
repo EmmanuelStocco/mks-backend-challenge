@@ -9,15 +9,19 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  ValidationPipe,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserModel } from 'src/models/user.model';
-import { UserSchema } from 'src/schemas/user.schemas';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 
+import { CreateUserDto } from 'src/dto/user/create-user.dto';
+import { LoginUserDto } from 'src/dto/user/login-user.dto';
+import { UpdateUserDto } from 'src/dto/user/update-user.dto';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+
+@ApiTags('user')
 @Controller('/user')
 export class UserController {
   constructor(
@@ -25,7 +29,13 @@ export class UserController {
   ) {}
 
   @Post()
-  public async create(@Body() body: UserSchema): Promise<{ data: UserModel }> {
+  @ApiOperation({
+    summary: 'Create user',
+    description: 'Endpoint used to create a new user.',
+  })
+  public async create(
+    @Body() body: CreateUserDto,
+  ): Promise<{ data: UserModel }> {
     const { email, password, confirmPassword, name } = body;
     const userExistsByEmail = await this.model.findOne({ where: { email } });
     if (userExistsByEmail) {
@@ -49,9 +59,14 @@ export class UserController {
   }
 
   @Post('login')
+  @ApiOperation({
+    summary: 'Perform login',
+    description:
+      'Endpoint to log in a user via JWT, receiving credentials, validating, and returning a Token.',
+  })
   async login(
     @Body()
-    { email, password }: { email: string; password: string },
+    { email, password }: LoginUserDto,
   ): Promise<{ user: Omit<UserModel, 'password'>; token: string }> {
     if (!email || !password) {
       throw new BadRequestException('Invalid email or password');
@@ -81,6 +96,10 @@ export class UserController {
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Retrieve single user by ID',
+    description: 'Endpoint used to retrieve a single user by their unique ID.',
+  })
   public async getOne(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<{ data: UserModel }> {
@@ -92,15 +111,23 @@ export class UserController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: 'Retrieve all users',
+    description: 'Endpoint used to retrieve all users.',
+  })
   public async getAll(): Promise<{ data: UserModel[] }> {
     const list = await this.model.find();
     return { data: list };
   }
 
   @Put(':id')
+  @ApiOperation({
+    summary: 'Update user',
+    description: "Endpoint used to update a user's information by their ID.",
+  })
   public async update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: UserSchema,
+    @Body() body: UpdateUserDto,
   ): Promise<{ data: UserModel }> {
     const user = await this.model.findOne({ where: { id } });
     const { email, password, confirmPassword, name } = body;
@@ -126,6 +153,10 @@ export class UserController {
   }
 
   @Delete(':id')
+  @ApiOperation({
+    summary: 'Delete user',
+    description: 'Endpoint used to delete a user by their ID.',
+  })
   public async delete(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<{ data: string }> {

@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user.module';
-import { UserModule as UserModuleSwagger } from './user/user.module';
 
 import { MovieModule } from './modules/movie.module';
 
@@ -23,7 +22,6 @@ import { MovieModule } from './modules/movie.module';
       synchronize: true, // dev config,
       entities: ['dist/**/*.model.js'],
     }),
-    UserModuleSwagger,
   ],
   controllers: [AppController],
   providers: [AppService],
