@@ -128,7 +128,7 @@ export class UserController {
   })
   public async getAll(): Promise<{ data: UserModel[] }> {
     const allUsersRedis = await getRedis(`all-users`);
-    if (allUsersRedis) {
+    if (!!allUsersRedis) {
       const allUsersRedisFound = JSON.parse(allUsersRedis);
       return { data: allUsersRedisFound };
     } else {

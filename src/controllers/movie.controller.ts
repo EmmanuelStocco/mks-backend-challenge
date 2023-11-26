@@ -22,6 +22,12 @@ import {
 
 import { CreateMovieDto } from 'src/dto/movie/create-movie.dto';
 import { UpdateMovieDto } from 'src/dto/movie/update-movie.dto';
+import {
+  deleteRedisKey,
+  deleteRedisKeyAll,
+  getRedis,
+  setRedis,
+} from 'src/redisConfig';
 
 @ApiBearerAuth()
 @ApiTags('movies')
@@ -31,17 +37,6 @@ export class MovieController {
   constructor(
     @InjectRepository(MovieModel) private model: Repository<MovieModel>,
   ) {}
-
-  @Get()
-  @ApiOperation({
-    summary: 'Retrieve all movies',
-    description:
-      'Endpoint used to retrieve a list of all available movies. A valid Bearer token in the "Authorization" header is required to access this endpoint.',
-  })
-  public async getAll(): Promise<{ data: MovieModel[] }> {
-    const movieList = await this.model.find();
-    return { data: movieList };
-  }
 
   @Post()
   @ApiOperation({
@@ -53,7 +48,35 @@ export class MovieController {
     @Body() body: CreateMovieDto,
   ): Promise<{ data: MovieModel }> {
     const movieCreated = await this.model.save(body);
+    await setRedis(`movie-${movieCreated.id}`, JSON.stringify(movieCreated));
+    const redisKeysToDelete = [
+      'all-movies',
+      `movies-${movieCreated.nationality}`,
+      `movies-${movieCreated.director}`,
+      `movies-${movieCreated.year}`,
+      `movies-${movieCreated.title}`,
+    ];
+    await deleteRedisKeyAll(redisKeysToDelete);
+
     return { data: movieCreated };
+  }
+
+  @Get()
+  @ApiOperation({
+    summary: 'Retrieve all movies',
+    description:
+      'Endpoint used to retrieve a list of all available movies. A valid Bearer token in the "Authorization" header is required to access this endpoint.',
+  })
+  public async getAll(): Promise<{ data: MovieModel[] }> {
+    const allMovies = await getRedis(`all-movies`);
+    if (!!allMovies) {
+      const allMoviesFound = JSON.parse(allMovies);
+      return { data: allMoviesFound };
+    } else {
+      const movieList = await this.model.find();
+      await setRedis(`all-movies`, JSON.stringify(movieList));
+      return { data: movieList };
+    }
   }
 
   @Get(':id')
@@ -63,11 +86,18 @@ export class MovieController {
       'Endpoint used to retrieve details of a specific movie by providing its unique identifier. A valid Bearer token in the "Authorization" header is required to access this endpoint.',
   })
   public async getOne(@Param('id') id: number): Promise<{ data: MovieModel }> {
-    const movie = await this.model.findOne({ where: { id } });
-    if (!movie) {
-      throw new NotFoundException(`No movie with this id was found!`);
+    const movieRedis = await getRedis(`movie-${id}`);
+    if (!!movieRedis) {
+      const movieRedisFound = JSON.parse(movieRedis);
+      return { data: movieRedisFound };
+    } else {
+      const movie = await this.model.findOne({ where: { id } });
+      if (!movie) {
+        throw new NotFoundException(`No movie with this id was found!`);
+      }
+      await setRedis(`movie-${movie.id}`, JSON.stringify(movie));
+      return { data: movie };
     }
-    return { data: movie };
   }
 
   @Put(':id')
@@ -80,6 +110,19 @@ export class MovieController {
     @Param('id') id: number,
     @Body() body: UpdateMovieDto,
   ): Promise<{ data: MovieModel }> {
+    const movieRedis = await getRedis(`movie-${id}`);
+    if (movieRedis) {
+      await deleteRedisKey(`movie-${id}`);
+    }
+    const redisKeysToDelete = [
+      'all-movies',
+      `movies-${body.nationality}`,
+      `movies-${body.director}`,
+      `movies-${body.year}`,
+      `movies-${body.title}`,
+    ];
+    await deleteRedisKeyAll(redisKeysToDelete);
+
     const movie = await this.model.findOne({ where: { id } });
 
     if (!movie) {
@@ -98,10 +141,24 @@ export class MovieController {
       'Endpoint used to delete a specific movie by providing its unique identifier. Requires a valid Bearer token in the "Authorization" header to authenticate the request.',
   })
   public async delete(@Param('id') id: number): Promise<{ data: string }> {
+    await deleteRedisKey('all-movies');
+    const movieRedis = await getRedis(`movie-${id}`);
+    if (movieRedis) {
+      await deleteRedisKey(`movie-${id}`);
+    }
     const movie = await this.model.findOne({ where: { id } });
     if (!movie) {
       throw new NotFoundException(`No movie with this id was found.`);
     }
+
+    const redisKeysToDelete = [
+      'all-movies',
+      `movies-${movie.nationality}`,
+      `movies-${movie.director}`,
+      `movies-${movie.year}`,
+      `movies-${movie.title}`,
+    ];
+    await deleteRedisKeyAll(redisKeysToDelete);
     await this.model.delete(id);
     return { data: `Movie id:${id} has been successfully deleted!` };
   }
@@ -120,13 +177,20 @@ export class MovieController {
   public async getByTitle(
     @Param('name') name: string,
   ): Promise<{ data: MovieModel[] }> {
-    const movies = await this.model.find({
-      where: { title: ILike(`%${name}%`) },
-    });
-    if (movies.length === 0) {
-      throw new NotFoundException(`No movies with this name were found!`);
+    const movieRedis = await getRedis(`movies-${name}`);
+    if (!!movieRedis) {
+      const movieRedisFound = JSON.parse(movieRedis);
+      return { data: movieRedisFound };
+    } else {
+      const movies = await this.model.find({
+        where: { title: ILike(`%${name}%`) },
+      });
+      if (movies.length === 0) {
+        throw new NotFoundException(`No movies with this name were found!`);
+      }
+      await setRedis(`movie-${name}`, JSON.stringify(movies));
+      return { data: movies };
     }
-    return { data: movies };
   }
 
   @Get('byYear/:year')
@@ -143,11 +207,18 @@ export class MovieController {
   public async getByYear(
     @Param('year') year: number,
   ): Promise<{ data: MovieModel[] }> {
-    const movies = await this.model.find({ where: { year } });
-    if (movies.length === 0) {
-      throw new NotFoundException(`No movies from this year were found!`);
+    const movieRedis = await getRedis(`movies-${year}`);
+    if (!!movieRedis) {
+      const movieRedisFound = JSON.parse(movieRedis);
+      return { data: movieRedisFound };
+    } else {
+      const movies = await this.model.find({ where: { year } });
+      if (movies.length === 0) {
+        throw new NotFoundException(`No movies from this year were found!`);
+      }
+      await setRedis(`movie-${year}`, JSON.stringify(movies));
+      return { data: movies };
     }
-    return { data: movies };
   }
 
   @Get('byDirector/:director')
@@ -164,13 +235,20 @@ export class MovieController {
   public async getByDirector(
     @Param('director') director: string,
   ): Promise<{ data: MovieModel[] }> {
-    const movies = await this.model.find({
-      where: { director: ILike(`%${director}%`) },
-    });
-    if (movies.length === 0) {
-      throw new NotFoundException(`No movies by this director were found!`);
+    const movieRedis = await getRedis(`movies-${director}`);
+    if (!!movieRedis) {
+      const movieRedisFound = JSON.parse(movieRedis);
+      return { data: movieRedisFound };
+    } else {
+      const movies = await this.model.find({
+        where: { director: ILike(`%${director}%`) },
+      });
+      if (movies.length === 0) {
+        throw new NotFoundException(`No movies by this director were found!`);
+      }
+      await setRedis(`movie-${director}`, JSON.stringify(movies));
+      return { data: movies };
     }
-    return { data: movies };
   }
 
   @Get('byNationality/:nationality')
@@ -188,14 +266,21 @@ export class MovieController {
     @Param('nationality')
     nationality: string,
   ): Promise<{ data: MovieModel[] }> {
-    const movies = await this.model.find({
-      where: { nationality: ILike(`%${nationality}%`) },
-    });
-    if (movies.length === 0) {
-      throw new NotFoundException(
-        `No movies from this nationality were found!`,
-      );
+    const movieRedis = await getRedis(`movies-${nationality}`);
+    if (!!movieRedis) {
+      const movieRedisFound = JSON.parse(movieRedis);
+      return { data: movieRedisFound };
+    } else {
+      const movies = await this.model.find({
+        where: { nationality: ILike(`%${nationality}%`) },
+      });
+      if (movies.length === 0) {
+        throw new NotFoundException(
+          `No movies from this nationality were found!`,
+        );
+      }
+      await setRedis(`movie-${nationality}`, JSON.stringify(movies));
+      return { data: movies };
     }
-    return { data: movies };
   }
 }

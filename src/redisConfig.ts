@@ -18,4 +18,14 @@ function deleteRedisKey(key: string) {
   return syncRedisDel(key);
 }
 
-export { redisClient, getRedis, setRedis, deleteRedisKey };
+async function deleteRedisKeyAll(keys: string[]) {
+  const multi = redisClient.multi();
+  keys.forEach((key) => {
+    multi.del(key);
+  });
+
+  const execMulti = promisify(multi.exec).bind(multi);
+  await execMulti();
+}
+
+export { redisClient, getRedis, setRedis, deleteRedisKey, deleteRedisKeyAll };
