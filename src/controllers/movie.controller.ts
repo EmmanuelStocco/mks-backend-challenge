@@ -80,4 +80,15 @@ export class MovieController {
     }
     return { data: movies };
   }
+
+  @Get('byYear/:year')
+  public async getByYear(
+    @Param('year') year: number,
+  ): Promise<{ data: MovieModel[] }> {
+    const movies = await this.model.find({ where: { year } });
+    if (movies.length === 0) {
+      throw new NotFoundException(`No movies from this year were found!`);
+    }
+    return { data: movies };
+  }
 }
