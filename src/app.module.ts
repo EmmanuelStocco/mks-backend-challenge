@@ -15,7 +15,6 @@ import { UserModule as UserModuleSwagger } from './user/user.module';
     username: process.env.POSTGRES_USER,
     password: process.env.POSTGRES_PASSWORD,
     synchronize: true, // dev config,
-    // entities: [__dirname + '/**/*.entity{.js,.ts}'],
     entities: ["dist/**/*.model.js"]
   }), UserModuleSwagger],
   controllers: [AppController],
