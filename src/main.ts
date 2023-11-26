@@ -11,7 +11,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Documentação - Desafio Backend Challenge')
     .setDescription(
-      'Aqui você consegue visualizar e testar diretamente o funcionamento de cada rota da Rest API.',
+      'Aqui você consegue visualizar e testar diretamente o funcionamento de cada rota da API RESTfull.',
     )
     .setVersion('1.0')
     .addTag('user')
