@@ -20,6 +20,7 @@ import { CreateUserDto } from 'src/dto/user/create-user.dto';
 import { LoginUserDto } from 'src/dto/user/login-user.dto';
 import { UpdateUserDto } from 'src/dto/user/update-user.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { getRedis, setRedis } from 'src/redisConfig';
 
 @ApiTags('user')
 @Controller('/user')
@@ -89,6 +90,7 @@ export class UserController {
 
     const { password: _, ...userLogin } = user;
 
+    await setRedis(`user-${user.id}`, JSON.stringify(user));
     return {
       user: userLogin,
       token: token,
@@ -103,11 +105,18 @@ export class UserController {
   public async getOne(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<{ data: UserModel }> {
-    const user = await this.model.findOne({ where: { id } });
-    if (!user) {
-      throw new NotFoundException(`No users with this id were found!`);
+    const userRedis = await getRedis(`user-${id}`);
+
+    if (!!userRedis) {
+      const userRedisFound = JSON.parse(userRedis);
+      return { data: userRedisFound };
+    } else {
+      const user = await this.model.findOne({ where: { id } });
+      if (!user) {
+        throw new NotFoundException(`No users with this id were found!`);
+      }
+      return { data: user };
     }
-    return { data: user };
   }
 
   @Get()
