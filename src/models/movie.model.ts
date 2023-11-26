@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
-export class Movie {
+export class MovieModel {
   @PrimaryGeneratedColumn()
   id: number;
   
