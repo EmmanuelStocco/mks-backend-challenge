@@ -9,7 +9,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { MovieModel } from 'src/models/movie.model';
 import { MovieSchema } from 'src/schemas/movie.schemas';
 
@@ -88,6 +88,19 @@ export class MovieController {
     const movies = await this.model.find({ where: { year } });
     if (movies.length === 0) {
       throw new NotFoundException(`No movies from this year were found!`);
+    }
+    return { data: movies };
+  }
+
+  @Get('byDirector/:director')
+  public async getByDirector(
+    @Param('director') director: string,
+  ): Promise<{ data: MovieModel[] }> {
+    const movies = await this.model.find({
+      where: { director: ILike(`%${director}%`) },
+    });
+    if (movies.length === 0) {
+      throw new NotFoundException(`No movies by this director were found!`);
     }
     return { data: movies };
   }
