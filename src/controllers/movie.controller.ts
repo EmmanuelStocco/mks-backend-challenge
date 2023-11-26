@@ -9,7 +9,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { MovieModel } from 'src/models/movie.model';
 import { MovieSchema } from 'src/schemas/movie.schemas';
 
@@ -66,5 +66,18 @@ export class MovieController {
     }
     await this.model.delete(id);
     return { data: `Movie id:${id} has been successfully deleted!` };
+  }
+
+  @Get('byName/:name')
+  public async getByTitle(
+    @Param('name') name: string,
+  ): Promise<{ data: MovieModel[] }> {
+    const movies = await this.model.find({
+      where: { title: ILike(`%${name}%`) },
+    });
+    if (movies.length === 0) {
+      throw new NotFoundException(`No movies with this name were found!`);
+    }
+    return { data: movies };
   }
 }
