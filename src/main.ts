@@ -14,9 +14,9 @@ async function bootstrap() {
       'Here, you can view and directly test the functionality of each route of the RESTful API.',
     )
     .setContact(
-      'Emmanuel Stocco', // Author's name
-      'https://github.com/emmanuelstocco', // Author's URL
-      'emmanuelrolimstocco@gmail.com', // Author's email
+      'Emmanuel Stocco',
+      'https://github.com/emmanuelstocco',
+      'emmanuelrolimstocco@gmail.com',
     )
     .setVersion('2.0')
     .addTag('user')
