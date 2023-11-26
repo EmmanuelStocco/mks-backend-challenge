@@ -37,13 +37,9 @@ export class UserController {
   }
 
   @Post('login')
-  async login(@Body() { emailOrName, password }: { emailOrName: string; password: string }): Promise<{ user: Omit<UserModel, 'password'>, token: string }> {
-    console.log(emailOrName, password)
-    let user = await this.model.findOne({ where: { email: emailOrName } });
-
-    if (!user) {
-      user = await this.model.findOne({ where: { name: emailOrName } });
-    }
+  async login(@Body() { email, password }: { email: string; password: string }): Promise<{ user: Omit<UserModel, 'password'>, token: string }> {
+    console.log(email, password)
+    let user = await this.model.findOne({ where: { email: email } });
 
     if (!user) {
       throw new BadRequestException('Invalid email or password');
