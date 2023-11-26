@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user.module';
+import { UserModule as UserModuleSwagger } from './user/user.module';
 
 @Module({
   imports: [UserModule, ConfigModule.forRoot(), TypeOrmModule.forRoot({
@@ -16,7 +17,7 @@ import { UserModule } from './modules/user.module';
     synchronize: true, // dev config,
     // entities: [__dirname + '/**/*.entity{.js,.ts}'],
     entities: ["dist/**/*.model.js"]
-  })],
+  }), UserModuleSwagger],
   controllers: [AppController],
   providers: [AppService],
 })

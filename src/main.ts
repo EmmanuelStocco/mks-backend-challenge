@@ -14,11 +14,9 @@ async function bootstrap() {
       'Aqui você consegue visualizar e testar diretamente o funcionamento de cada rota da Rest API.',
     )
     .setVersion('1.0')
-    .addTag('users')
-    .build();
-
-
-
+    .addTag('user')
+    .build();  
+    
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('document', app, document);
 
