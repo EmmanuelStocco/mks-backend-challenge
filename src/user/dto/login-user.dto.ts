@@ -2,13 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginUserDto {
   @ApiProperty({
-    description: 'The name or email is used for login. A secure comparison will be made between the provided name/email and the registered one in the database for the operation.',
+    description: 'O nome ou e-mail é usado para login. Será feita uma comparação segura entre o nome/e-mail fornecido e o registrado no banco de dados para a operação.',
     example: 'john@mail.com'
   })
   email: string;
 
   @ApiProperty({
-    description: 'The password is used for login. A secure comparison will be made between the provided password and the one registered with the same email or name in the database to proceed with the operation.',
+    description: 'A senha é usada para login. Será feita uma comparação segura entre a senha fornecida e aquela registrada com o mesmo e-mail ou nome no banco de dados para prosseguir com a operação.',
     example: 'John123*'
   })
   password: string;

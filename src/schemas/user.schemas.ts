@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger'
 
 export class UserSchema {
   @ApiProperty({
-    description: 'The name of the user',
+    description: 'O nome do usuário',
     example: 'John Doe',
   })
   @IsString()
@@ -11,7 +11,7 @@ export class UserSchema {
   name: string;
 
   @ApiProperty({
-    description: 'The password of the user',
+    description: 'A senha do usuário',
     example: 'Senha123*',
   })
   @IsString()
@@ -21,7 +21,7 @@ export class UserSchema {
   password: string;
 
   @ApiProperty({
-    description: 'The confirmed password of the user. This field is used to confirm the user-provided password for verification purposes.',
+    description: 'A senha confirmada do usuário. Este campo é usado para confirmar a senha fornecida pelo usuário para fins de verificação',
     example: 'Senha123*',
   })
   @IsString()
@@ -29,7 +29,7 @@ export class UserSchema {
   confirmPassword: string;
   
   @ApiProperty({
-    description: 'The email address of the user.',
+    description: 'O endereço de e-mail do usuário',
     example: 'john@example.com',
   })
   @IsString()
