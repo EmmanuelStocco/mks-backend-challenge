@@ -8,6 +8,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
+    .addBearerAuth()
     .setTitle('Documentação - Desafio Backend Challenge')
     .setDescription(
       'Aqui você consegue visualizar e testar diretamente o funcionamento de cada rota da API RESTfull.',

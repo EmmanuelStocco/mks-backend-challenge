@@ -14,13 +14,31 @@ import { ILike, Repository } from 'typeorm';
 import { MovieModel } from 'src/models/movie.model';
 import { MovieSchema } from 'src/schemas/movie.schemas';
 import { AuthGuard } from 'src/middleware/authMiddelware';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiHeader,
+} from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('movies')
 @Controller('/movie')
 @UseGuards(AuthGuard)
 export class MovieController {
   constructor(
     @InjectRepository(MovieModel) private model: Repository<MovieModel>,
   ) {}
+
+  @Get()
+  @ApiOperation({
+    summary: 'Buscar todos os filmes',
+    description: 'Endpoint utilizado para buscar todos os filmes.',
+  })
+  public async getAll(): Promise<{ data: MovieModel[] }> {
+    const movieList = await this.model.find();
+    return { data: movieList };
+  }
 
   @Post()
   public async create(
@@ -37,12 +55,6 @@ export class MovieController {
       throw new NotFoundException(`No movie with this id was found!`);
     }
     return { data: movie };
-  }
-
-  @Get()
-  public async getAll(): Promise<{ data: MovieModel[] }> {
-    const movieList = await this.model.find();
-    return { data: movieList };
   }
 
   @Put(':id')
