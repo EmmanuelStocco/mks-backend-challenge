@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'; 
 
-export class UserSchema {
+export class User {
   @ApiProperty({
-    description: 'User name',
+    description: 'Nome do usuário',
     example: 'John Doe',
   }) 
   name: string; 
