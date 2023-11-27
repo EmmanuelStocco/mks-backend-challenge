@@ -65,3 +65,6 @@ Lembre-se de configurar nesse caso o .env e de subir os servidores dos bancos de
 - Docker - 3 semanas
 - Swagger - 2 semana
 - Redis - Primeiro contato
+
+## Hospedagem
+Toda a aplicação foi hospedada na Render, incluindo os bancos PostgreSQL e Redis, juntamente com a API Rest. Você pode acessar a aplicação e conferir a documentação e testes [clicando aqui](https://deploy-mks-backend-challenge.onrender.com/document#/).
