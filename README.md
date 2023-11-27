@@ -1,73 +1,67 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+# MKS Backend Challenge - Emmanuel
 
 ## Description
+Este é um projeto criado por mim (Emmanuel Rolim Stocco) para o desafio mks-backend-challenge. O desafio consiste em criar uma API RESTful sobre um catálogo de filmes, onde cada endpoint só pode ser consumido com um usuário autenticado e utiliza o Redis como cache, Docker, Nest, Swagger para documentação, PostgreSQL e TypeScript.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Como startar o projeto
 
-## Installation
+1. **Configurações básicas:**
+Para iniciar o projeto corretamente, comece criando um arquivo chamado ".env" na raiz do projeto. Para facilitar, você pode usar o arquivo ".env_example" como guia, pois ele contém todos os padrões necessários para executar o projeto, juntamente com alguns valores predefinidos. Basta inserir as credenciais desejadas no arquivo e prosseguir.
 
+2. **Inicialização com Docker:**
+```bash
+$ npm run docker
+```
+ou 
+```bash
+$ yarn docker
+```
+Esse comando ira limpar qualquer dado do docker que possa interferir, e subir os 3 conteiners necessários para a aplicação funcionar (um servidor nodejs, um banco postgresql, um banco redis). É fundamental ter um gerenciador de pacotes (npm ou yarn) e o docker instalado. Se preferir, pode subir os servidores docker manualmente através do comando:
+```bash
+$ docker-compose build --no-cache && docker-compose down && docker-compose up
+```
+
+ou 
+
+Você também instalar as dependencias diretamente na sua maquina com os comandos:
 ```bash
 $ npm install
 ```
-
-## Running the app
-
+ou 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+$ yarn
 ```
+Lembre-se de configurar nesse caso o .env e de subir os servidores dos bancos de dados e da API manualmente, ou parte no docker e parte localmente.
 
-## Test
+3. **Documentação da API:**
+ Acesse: https://localhost:{PORTA_DA_API}/document - Aqui você encontrará a documentação do projeto via Swagger, permitindo testar cada rota da API diretamente no navegador, com dados exigidos, esperados e pré-definidos.
 
-```bash
-# unit tests
-$ npm run test
+## Desenvolvimento
 
-# e2e tests
-$ npm run test:e2e
+- **Estudo e Preparação:**
+1. Primeiramente eu chequei os requisitos e tecnlogias da API, e organizei um breve estudo sobre as tecnologias que ainda não conhecia
 
-# test coverage
-$ npm run test:cov
-```
+- **Implementação:**
+2. Iniciei o projeto instalando as dependências básicas.
+3. Instalei e configurei o Docker para executar o PostgreSQL e o Node.js.
+4. Utilizei o Nest para criar rotas, controllers e entidades de usuários, já que a regra de negócio exige credenciais para acessar as rotas em filmes.
+5. Instalei e inicializei o Swagger e documentei todas as rotas de usuário.
+6. Criei um sistema de login JWT usando bcrypt e a biblioteca jwt, através de um middleware.
+7. Desenvolvi rotas, controllers e entidades necessárias para o catálogo de filmes, visando cenários reais para criação, deleção, atualização e buscas (por ano de lançamento, diretor, etc.).
+8. Adicionei o middleware de autenticação nas controllers para o catálogo de filmes.
+9. Documentei com o Swagger todas as rotas, expectativas e obrigatoriedades do sistema de filmes.
+10. Instalei o Redis e criei uma instância através do Docker.
+11. Utilizei o Redis para melhorar o desempenho nas informações de usuário, realizando validações através de chaves (variáveis ou não) para buscar ou remover do/banco em cache, quando necessário.
+12. Apliquei o Redis para melhorar o desempenho nas informações de filmes, realizando validações através de chaves (variáveis ou não) para buscar ou remover do/banco em cache, quando necessário.
+13. Reformatei o código conforme necessário com ESLint e simplifiquei o código.
+14. Realizei o deploy do banco PostgreSQL, do Redis e da API nos servidores da Render.
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+## Experiência com cada tecnologia
+TypeScript - 2 anos
+TypeORM - 2 anos
+PostgreSQL - 2 anos 
+Node.js - 2 anos
+Nest.js - 3 semanas
+Docker - 3 semanas
+Swagger - 2 semana
+Redis - Primeiro contato
