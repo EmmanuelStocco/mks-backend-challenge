@@ -1,7 +1,10 @@
 import Redis from 'ioredis';
 import { promisify } from 'util';
 
-const redisClient = new Redis();
+const redisClient = new Redis({
+  host: process.env.REDIS_HOST, // Nome do serviço do contêiner Redis no Docker Compose
+  port: Number(process.env.REDIS_PORT),
+}); //docker build
 
 function getRedis(value: string) {
   const syncRedisGet = promisify(redisClient.get).bind(redisClient);

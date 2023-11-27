@@ -12,7 +12,7 @@ async function bootstrap() {
     .addBearerAuth()
     .setTitle('Documentation - Backend Challenge')
     .setDescription(
-      'Here, you can view and directly test the functionality of each route of the RESTful API.',
+      'Here, you can view and directly test the functionality of each route of the RESTful API.Note: Remember that routes related to the movie catalog are protected and require logging in a user first.',
     )
     .setContact(
       'Emmanuel Stocco',
