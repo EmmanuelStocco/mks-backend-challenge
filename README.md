@@ -57,11 +57,11 @@ Lembre-se de configurar nesse caso o .env e de subir os servidores dos bancos de
 14. Realizei o deploy do banco PostgreSQL, do Redis e da API nos servidores da Render.
 
 ## Experiência com cada tecnologia
-TypeScript - 2 anos
-TypeORM - 2 anos
-PostgreSQL - 2 anos 
-Node.js - 2 anos
-Nest.js - 3 semanas
-Docker - 3 semanas
-Swagger - 2 semana
-Redis - Primeiro contato
+- TypeScript - 2 anos
+- TypeORM - 2 anos
+- PostgreSQL - 2 anos 
+- Node.js - 2 anos
+- Nest.js - 3 semanas
+- Docker - 3 semanas
+- Swagger - 2 semana
+- Redis - Primeiro contato
